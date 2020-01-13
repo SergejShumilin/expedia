@@ -1,6 +1,4 @@
-package com.epam.esm.exception;
-
-import org.springframework.http.HttpStatus;
+package com.epam.esm.dao.exception;
 
 
 public class ApiError {

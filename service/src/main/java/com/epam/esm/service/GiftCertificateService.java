@@ -3,7 +3,7 @@ package com.epam.esm.service;
 import com.epam.esm.dao.GiftCertificatesDao;
 import com.epam.esm.dao.entity.GiftCertificate;
 import com.epam.esm.dao.entity.Tag;
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.dao.exception.CertificateNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -41,7 +41,7 @@ public class GiftCertificateService {
         giftCertificatesDao.delete(id);
     }
 
-    public List<GiftCertificate> getAll() {
+    public List<GiftCertificate> findAll() {
         return giftCertificatesDao.findAll();
     }
 
@@ -68,7 +68,7 @@ public class GiftCertificateService {
         }
     }
 
-    private void changeCertificate(GiftCertificate certificateFromDb, GiftCertificate certificate){
+    public void changeCertificate(GiftCertificate certificateFromDb, GiftCertificate certificate){
        if (!certificate.getName().equals(certificateFromDb.getName())){
            certificateFromDb.setName(certificate.getName());
        }
