@@ -42,6 +42,11 @@ public class GiftCertificateDaoImpl implements GiftCertificatesDao<GiftCertifica
     }
 
     @Override
+    public List<GiftCertificate> findByName(String name){
+        return jdbcTemplate.query("select * from certificates where name = ?", new Object[]{name}, giftCertificateMapper);
+    }
+
+    @Override
     public void update(GiftCertificate giftCertificate) {
         jdbcTemplate.update("UPDATE certificates SET name = ?, description=?, price=?, create_date=?, last_update_date=?, duration=?, tag_id =? WHERE id = ?",
                 giftCertificate.getName(), giftCertificate.getDescription(), giftCertificate.getPrice(),

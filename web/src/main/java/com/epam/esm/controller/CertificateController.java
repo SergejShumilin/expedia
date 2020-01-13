@@ -26,10 +26,10 @@ public class CertificateController {
     public List<GiftCertificate> findAll() {
         return giftCertificateService.getAll();
     }
-
-    @GetMapping(value = "/{id}")
-    public GiftCertificate findById(@PathVariable int id) throws CertificateNotFoundException {
-        return giftCertificateService.findById(id);
+    
+    @GetMapping(value = "/{name}")
+    public List<GiftCertificate> findByName(@PathVariable String name){
+        return giftCertificateService.findByName(name);
     }
 
     @DeleteMapping(value = "/{id}")

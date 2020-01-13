@@ -51,6 +51,14 @@ public class GiftCertificateService {
         return giftCertificatesDao.findById(id);
     }
 
+    public List<GiftCertificate> findByName(String name) {
+        List<GiftCertificate> all = giftCertificatesDao.findAll();
+        String namePattern = ".*" + name + ".*";
+        return all.stream()
+                .filter(giftCertificate -> giftCertificate.getName().matches(namePattern))
+                .collect(Collectors.toList());
+    }
+
     public void update(GiftCertificate giftCertificate) throws CertificateNotFoundException {
         GiftCertificate certificateFromDb = findById(giftCertificate.getId());
         boolean equalsCertificates = certificateFromDb.equals(giftCertificate);
