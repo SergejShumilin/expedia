@@ -43,7 +43,7 @@ public class GiftCertificateDaoImpl implements GiftCertificatesDao<GiftCertifica
 
     @Override
     public List<GiftCertificate> findByName(String name){
-        return jdbcTemplate.query("select * from certificates where name = ?", new Object[]{name}, giftCertificateMapper);
+        return jdbcTemplate.query("select * from certificates where name like ?", new Object[]{"%"+name+"%"}, giftCertificateMapper);
     }
 
     @Override
