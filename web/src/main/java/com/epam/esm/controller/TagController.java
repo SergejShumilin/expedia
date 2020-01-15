@@ -1,14 +1,13 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dao.entity.Tag;
-import com.epam.esm.dao.exception.CertificateNotFoundException;
 import com.epam.esm.service.TagService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/tag")
+@RequestMapping("/tags")
 public class TagController {
     private final TagService tagService;
 

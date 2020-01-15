@@ -22,11 +22,16 @@ public class GiftCertificateDaoImpl implements GiftCertificatesDao<GiftCertifica
     private final static String UPDATE = "UPDATE certificates SET name = ?, description=?, price=?, create_date=?, last_update_date=?, duration=?, tag_id =? WHERE id = ?";
     private final static String IS_EXISTS = "SELECT EXISTS(SELECT id FROM certificates WHERE id = ?)";
     private final static String IS_EXISTS_BY_NAME = "SELECT EXISTS(SELECT name FROM certificates WHERE name like ?)";
+    private final static String IS_EXISTS_BY_DESCRIPTION = "SELECT EXISTS(SELECT name FROM certificates WHERE description like ?)";
+
     private final static String SORT_BY_DATE_DESC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY create_date DESC";
     private final static String SORT_BY_DATE_ASC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY create_date";
 
     private final static String SORT_BY_NAME_ASC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY certificates.name";
     private final static String SORT_BY_NAME_DESC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY certificates.name DESC";
+
+    private final static String SORT_BY_DATE_NAME_ASC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY certificates.create_date, certificates.name";
+    private final static String SORT_BY_DATE_NAME_DESC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY certificates.create_date, certificates.name DESC";
     private final GiftCertificateMapper giftCertificateMapper;
     private final JdbcTemplate jdbcTemplate;
 
@@ -65,8 +70,8 @@ public class GiftCertificateDaoImpl implements GiftCertificatesDao<GiftCertifica
     }
 
     @Override
-    public GiftCertificate findByDescription(String description) {
-        return jdbcTemplate.queryForObject(FIND_BY_DESCRIPTION, new Object[]{"%"+description+"%"}, giftCertificateMapper);
+    public List<GiftCertificate> findByDescription(String description) {
+        return jdbcTemplate.query(FIND_BY_DESCRIPTION, new Object[]{"%"+description+"%"}, giftCertificateMapper);
     }
 
     @Override
@@ -91,11 +96,24 @@ public class GiftCertificateDaoImpl implements GiftCertificatesDao<GiftCertifica
         return jdbcTemplate.queryForObject(IS_EXISTS_BY_NAME, new Object[]{"%"+name+"%"}, Boolean.class);
     }
 
+    public boolean isExistByDescription(String description){
+        return jdbcTemplate.queryForObject(IS_EXISTS_BY_DESCRIPTION, new Object[]{"%"+description+"%"}, Boolean.class);
+    }
+
     @Override
-    public List<GiftCertificate> sort(String type){
+    public List<GiftCertificate> sortByDate(String type){
         String query = SORT_BY_DATE_ASC;
         if (type.equalsIgnoreCase("desc")){
             query = SORT_BY_DATE_DESC;
+        }
+        return jdbcTemplate.query(query, giftCertificateMapper);
+    }
+
+    @Override
+    public List<GiftCertificate> sortByDateAndName(String type){
+        String query = SORT_BY_DATE_NAME_ASC;
+        if (type.equalsIgnoreCase("desc")){
+            query = SORT_BY_DATE_NAME_DESC;
         }
         return jdbcTemplate.query(query, giftCertificateMapper);
     }

@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Tag;
-import com.epam.esm.dao.exception.CertificateNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

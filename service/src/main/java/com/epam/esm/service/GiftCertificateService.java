@@ -2,9 +2,13 @@ package com.epam.esm.service;
 
 import com.epam.esm.dao.GiftCertificatesDao;
 import com.epam.esm.dao.entity.GiftCertificate;
-import com.epam.esm.dao.entity.Tag;
 import com.epam.esm.dao.exception.CertificateNotFoundException;
 import com.epam.esm.dao.exception.TagNotFoundException;
+import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.impl.TagDaoImp;
+import com.epam.esm.dao.mapper.GiftCertificateMapper;
+import com.epam.esm.util.CertificateUpdater;
+import com.epam.esm.util.TagVerification;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneOffset;
@@ -18,10 +22,14 @@ public class GiftCertificateService {
     private final static String DATE_TIME = ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     private final GiftCertificatesDao<GiftCertificate> giftCertificatesDao;
     private final TagService tagService;
+    private final CertificateUpdater certificateUpdater;
+    private final TagVerification tagVerification;
 
-    public GiftCertificateService(GiftCertificatesDao<GiftCertificate> giftCertificatesDao, TagService tagService) {
+    public GiftCertificateService(GiftCertificatesDao<GiftCertificate> giftCertificatesDao, TagService tagService, CertificateUpdater certificateUpdater, TagVerification tagVerification) {
         this.giftCertificatesDao = giftCertificatesDao;
         this.tagService = tagService;
+        this.certificateUpdater = certificateUpdater;
+        this.tagVerification = tagVerification;
     }
 
     public List<GiftCertificate> findAll() {
@@ -44,7 +52,11 @@ public class GiftCertificateService {
         return giftCertificatesDao.findByName(name);
     }
 
-    public GiftCertificate findByDescription(String description){
+    public List<GiftCertificate> findByDescription(String description) throws CertificateNotFoundException {
+        boolean exist = giftCertificatesDao.isExistByDescription(description);
+        if (!exist){
+            throw new CertificateNotFoundException(description);
+        }
         return giftCertificatesDao.findByDescription(description);
     }
 
@@ -56,19 +68,22 @@ public class GiftCertificateService {
         return giftCertificatesDao.findByTag(tagName);
     }
     public void save(GiftCertificate giftCertificate) {
-
-        checkAndSaveTagIfNotExist(giftCertificate);
+        if (giftCertificate.getTag()!=null) {
+            tagVerification.checkAndSaveTagIfNotExist(tagService, giftCertificate);
+        }
         giftCertificate.setCreateDate(DATE_TIME);
         giftCertificate.setLastUpdateDate(DATE_TIME);
         giftCertificatesDao.save(giftCertificate);
     }
 
     public void update(GiftCertificate giftCertificate) throws TagNotFoundException {
-        checkAndSaveTagIfNotExist(giftCertificate);
+        if (giftCertificate.getTag()!=null) {
+            tagVerification.checkAndSaveTagIfNotExist(tagService, giftCertificate);
+        }
         GiftCertificate certificateFromDb = findById(giftCertificate.getId());
         boolean equalsCertificates = certificateFromDb.equals(giftCertificate);
         if (!equalsCertificates) {
-            changeCertificate(certificateFromDb, giftCertificate);
+            certificateUpdater.changeCertificate(certificateFromDb, giftCertificate);
             giftCertificatesDao.update(certificateFromDb);
         }
     }
@@ -78,37 +93,13 @@ public class GiftCertificateService {
     }
 
     public List<GiftCertificate> sortByDate(String typeSort) {
-        return giftCertificatesDao.sort(typeSort);
+        return giftCertificatesDao.sortByDate(typeSort);
     }
     public List<GiftCertificate> sortByName(String typeSort) {
-        return giftCertificatesDao.sort(typeSort);
+        return giftCertificatesDao.sortByName(typeSort);
     }
 
-    private void checkAndSaveTagIfNotExist(GiftCertificate giftCertificate){
-        Tag tag = giftCertificate.getTag();
-        if (!tagService.isExistByName(tag.getName())) {
-            tagService.save(tag);
-        }
-        tag = tagService.findByName(tag.getName());
-        giftCertificate.setTag(tag);
-    }
-
-    private void changeCertificate(GiftCertificate certificateFromDb, GiftCertificate certificate) {
-        if (!certificate.getName().equals(certificateFromDb.getName())) {
-            certificateFromDb.setName(certificate.getName());
-        }
-        if (certificate.getPrice() != certificateFromDb.getPrice()) {
-            certificateFromDb.setPrice(certificate.getPrice());
-        }
-        if (!certificate.getDescription().equals(certificateFromDb.getDescription())) {
-            certificateFromDb.setDescription(certificate.getDescription());
-        }
-        if (!certificate.getTag().equals(certificateFromDb.getTag())) {
-            certificateFromDb.setTag(certificate.getTag());
-        }
-        if (certificate.getDuration() != certificateFromDb.getDuration()) {
-            certificateFromDb.setDuration(certificate.getDuration());
-        }
-        certificateFromDb.setLastUpdateDate(DATE_TIME);
+    public List<GiftCertificate> sortByDateAndName(String typeSort) {
+        return giftCertificatesDao.sortByDateAndName(typeSort);
     }
 }

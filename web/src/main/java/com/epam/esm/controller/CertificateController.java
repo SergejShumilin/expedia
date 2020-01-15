@@ -32,7 +32,7 @@ public class CertificateController {
     }
 
     @GetMapping(value = "description/{description}")
-    public GiftCertificate findByDescription(@PathVariable String description) throws CertificateNotFoundException {
+    public List<GiftCertificate> findByDescription(@PathVariable String description) throws CertificateNotFoundException {
         return giftCertificateService.findByDescription(description);
     }
 
@@ -49,13 +49,18 @@ public class CertificateController {
     }
 
     @GetMapping(value = "/date_sort/{type}")
-    public List<GiftCertificate> sort(@PathVariable String type) {
+    public List<GiftCertificate> sortByDate(@PathVariable String type) {
         return giftCertificateService.sortByDate(type);
     }
 
     @GetMapping(value = "/name_sort/{type}")
     public List<GiftCertificate> sortByName(@PathVariable String type) {
         return giftCertificateService.sortByName(type);
+    }
+
+    @GetMapping(value = "/sort_date_name/{type}")
+    public List<GiftCertificate> sortByDateAndName(@PathVariable String type) {
+        return giftCertificateService.sortByDateAndName(type);
     }
 
     @PutMapping

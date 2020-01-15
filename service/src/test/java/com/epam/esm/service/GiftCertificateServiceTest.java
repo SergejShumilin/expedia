@@ -1,108 +1,116 @@
 package com.epam.esm.service;
 
-//import com.epam.esm.dao.entity.GiftCertificate;
-//import com.epam.esm.dao.entity.Tag;
-//import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
-//import com.epam.esm.dao.exception.CertificateNotFoundException;
-//import org.junit.Assert;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.Mockito;
-//import org.mockito.junit.MockitoJUnitRunner;
-//import org.springframework.beans.factory.annotation.Autowired;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//@RunWith(MockitoJUnitRunner.class)
-//public class GiftCertificateServiceTest {
-//    @Mock
-//    private GiftCertificateDaoImpl giftCertificateDao;
-//    private List<GiftCertificate> list;
-//
-//    @Autowired
-//    @InjectMocks
-//    private GiftCertificateService service;
-//
-//    @Before
-//    public void setup() {
-//        list = new ArrayList<>();
-//        GiftCertificate giftCertificate1 = new GiftCertificate();
-//        giftCertificate1.setName("a");
-//        GiftCertificate giftCertificate2 = new GiftCertificate();
-//        giftCertificate2.setName("c");
-//        GiftCertificate giftCertificate3 = new GiftCertificate();
-//        giftCertificate3.setName("b");
-//        list.add(giftCertificate1);
-//        list.add(giftCertificate2);
-//        list.add(giftCertificate3);
-//    }
-//
-//    @Test
-//    public void testDeleteShouldGiftCertificateDaoCallMethodDelete() {
-//        service.delete(1);
-//        Mockito.verify(giftCertificateDao, Mockito.times(1)).delete(1);
-//    }
-//
-//    @Test
-//    public void testFindAllShouldGiftCertificateDaoCallMethodFindAll() {
-//        service.findAll();
-//        Mockito.verify(giftCertificateDao, Mockito.times(1)).findAll();
-//    }
-//
-//    @Test
-//    public void testFindByIdShouldGiftCertificateDaoCallMethodFindById() throws CertificateNotFoundException {
-//        int id = 1;
-//        Mockito.when(giftCertificateDao.isExist(id)).thenReturn(true);
-//        service.findById(id);
-//        Mockito.verify(giftCertificateDao, Mockito.times(1)).findById(id);
-//    }
-//
-//    @Test(expected = CertificateNotFoundException.class)
-//    public void testFindByIdShouldGiftCertificateDaoReturnExceptionWhenCallMethodFindById() throws CertificateNotFoundException {
-//        int id = 1;
-//        Mockito.when(giftCertificateDao.isExist(id)).thenReturn(false);
-//        service.findById(id);
-//        Mockito.verify(giftCertificateDao, Mockito.times(1)).findById(id);
-//    }
-//
-//    @Test
-//    public void testFindByNameShouldGiftCertificateDaoCallMethodFindByName() {
-//        service.findByName("asd");
-//        Mockito.verify(giftCertificateDao, Mockito.times(1)).findByName("asd");
-//    }
-//
-//    @Test(expected = CertificateNotFoundException.class)
-//    public void testUpdateGiftCertificateDaoReturnExceptionWhenCallMethodUpdate() throws CertificateNotFoundException {
-//        GiftCertificate giftCertificate = new GiftCertificate();
-//        service.update(giftCertificate);
-//        Mockito.verify(giftCertificateDao, Mockito.times(1)).update(giftCertificate);
-//    }
-//
-//    @Test
-//    public void testSortByNameShouldGiftCertificateDaoReturnSortedByAscListCertificates() {
-//        String type = "asc";
-//        Mockito.when(giftCertificateDao.findAll()).thenReturn(list);
-//        List<GiftCertificate> sortList = service.sortByName(type);
-//        Assert.assertEquals("b", sortList.get(1).getName());
-//    }
-//
-//    @Test
-//    public void changeCertificate() {
-//        GiftCertificate giftCertificate1 = new GiftCertificate();
-//        giftCertificate1.setName("a");
-//        giftCertificate1.setDescription("a");
-//        giftCertificate1.setTag(new Tag());
-//        GiftCertificate giftCertificate2 = new GiftCertificate();
-//        giftCertificate2.setName("c");
-//        giftCertificate2.setDescription("a");
-//        giftCertificate2.setTag(new Tag());
-//
-//        service.changeCertificate(giftCertificate1, giftCertificate2);
-//        giftCertificate2.setLastUpdateDate(giftCertificate1.getLastUpdateDate());
-//        Assert.assertEquals(giftCertificate1, giftCertificate2);
-//    }
-//}
+import com.epam.esm.dao.entity.GiftCertificate;
+import com.epam.esm.dao.exception.TagNotFoundException;
+import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.exception.CertificateNotFoundException;
+import com.epam.esm.dao.impl.TagDaoImp;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
+@RunWith(MockitoJUnitRunner.class)
+public class GiftCertificateServiceTest {
+    @Mock
+    private GiftCertificateDaoImpl giftCertificateDao;
+    @Autowired
+    @InjectMocks
+    private GiftCertificateService service;
+
+    @Test
+    public void testDeleteShouldGiftCertificateDaoCallMethodDelete() {
+        service.delete(1);
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).delete(1);
+    }
+
+    @Test
+    public void testFindAllShouldGiftCertificateDaoCallMethodFindAll() {
+        service.findAll();
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    public void testFindByIdShouldGiftCertificateDaoCallMethodFindById() throws TagNotFoundException {
+        int id = 1;
+        Mockito.when(giftCertificateDao.isExist(id)).thenReturn(true);
+        service.findById(id);
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).findById(id);
+    }
+
+    @Test(expected = TagNotFoundException.class)
+    public void testFindByIdShouldGiftCertificateDaoReturnExceptionWhenCallMethodFindById() throws TagNotFoundException {
+        int id = 1;
+        Mockito.when(giftCertificateDao.isExist(id)).thenReturn(false);
+        service.findById(id);
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).findById(id);
+    }
+
+
+    @Test(expected = CertificateNotFoundException.class)
+    public void testFindByNameShouldGiftCertificateDaoThrowExceptionWhenCallMethodFindByName() throws CertificateNotFoundException {
+        service.findByName("asd");
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).findByName("asd");
+    }
+
+    @Test
+    public void testFindByNameShouldGiftCertificateDaoCallMethodFindByName() throws CertificateNotFoundException {
+        Mockito.when(giftCertificateDao.isExistByName("asd")).thenReturn(true);
+        service.findByName("asd");
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).findByName("asd");
+    }
+
+    @Test(expected = CertificateNotFoundException.class)
+    public void testFindByDescriptionShouldGiftCertificateDaoCallFindByDescription() throws CertificateNotFoundException {
+        service.findByDescription("description");
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).findByDescription("description");
+    }
+
+    @Test
+    public void testFindByDescriptionShouldGiftCertificateDaoCallMethodFindByDescription() throws CertificateNotFoundException {
+        Mockito.when(giftCertificateDao.isExistByDescription("asd")).thenReturn(true);
+        service.findByDescription("asd");
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).findByDescription("asd");
+    }
+
+    @Test(expected = CertificateNotFoundException.class)
+    public void testFindByDescriptionShouldGiftCertificateDaoCallFindByDate() throws CertificateNotFoundException {
+        service.findByDescription("2020-01-15");
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).findByDescription("2020-01-15");
+    }
+
+    @Test(expected = CertificateNotFoundException.class)
+    public void testFindByTagShouldGiftCertificateDaoCallFindByTag() throws CertificateNotFoundException {
+        service.findByDescription("2020-01-15");
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).findByDescription("2020-01-15");
+    }
+
+    @Test
+    public void testSortByDateShouldGiftCertificateDaoCallMethodSortByDate() {
+        service.sortByDate("asc");
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).sortByDate("asc");
+    }
+
+    @Test
+    public void testSortByNameShouldGiftCertificateDaoCallMethodSortByName() {
+        service.sortByName("name");
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).sortByName("name");
+    }
+
+    @Test
+    public void testSortByDateAndNameShouldGiftCertificateDaoCallMethodSortByDateAndName() {
+        service.sortByDateAndName("asc");
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).sortByDateAndName("asc");
+    }
+
+    @Test
+    public void testSaveShouldGiftCertificateDaoCallMethodSave() {
+        GiftCertificate giftCertificate = new GiftCertificate();
+        service.save(giftCertificate);
+        Mockito.verify(giftCertificateDao, Mockito.times(1)).save(giftCertificate);
+    }
+}
