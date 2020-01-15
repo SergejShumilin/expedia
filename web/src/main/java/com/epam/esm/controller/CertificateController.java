@@ -53,6 +53,11 @@ public class CertificateController {
         return giftCertificateService.sortByDate(type);
     }
 
+    @GetMapping(value = "/name_sort/{type}")
+    public List<GiftCertificate> sortByName(@PathVariable String type) {
+        return giftCertificateService.sortByName(type);
+    }
+
     @PutMapping
     public List<GiftCertificate> update(@RequestBody GiftCertificate giftCertificate) throws TagNotFoundException {
         giftCertificateService.update(giftCertificate);

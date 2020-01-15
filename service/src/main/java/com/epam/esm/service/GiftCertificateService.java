@@ -80,6 +80,9 @@ public class GiftCertificateService {
     public List<GiftCertificate> sortByDate(String typeSort) {
         return giftCertificatesDao.sort(typeSort);
     }
+    public List<GiftCertificate> sortByName(String typeSort) {
+        return giftCertificatesDao.sort(typeSort);
+    }
 
     private void checkAndSaveTagIfNotExist(GiftCertificate giftCertificate){
         Tag tag = giftCertificate.getTag();

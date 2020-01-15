@@ -24,6 +24,9 @@ public class GiftCertificateDaoImpl implements GiftCertificatesDao<GiftCertifica
     private final static String IS_EXISTS_BY_NAME = "SELECT EXISTS(SELECT name FROM certificates WHERE name like ?)";
     private final static String SORT_BY_DATE_DESC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY create_date DESC";
     private final static String SORT_BY_DATE_ASC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY create_date";
+
+    private final static String SORT_BY_NAME_ASC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY certificates.name";
+    private final static String SORT_BY_NAME_DESC = "select certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration, tags.id as tag_id, tags.name as tag_name from certificates inner join tags on certificates.tag_id=tags.id ORDER BY certificates.name DESC";
     private final GiftCertificateMapper giftCertificateMapper;
     private final JdbcTemplate jdbcTemplate;
 
@@ -93,6 +96,15 @@ public class GiftCertificateDaoImpl implements GiftCertificatesDao<GiftCertifica
         String query = SORT_BY_DATE_ASC;
         if (type.equalsIgnoreCase("desc")){
             query = SORT_BY_DATE_DESC;
+        }
+        return jdbcTemplate.query(query, giftCertificateMapper);
+    }
+
+    @Override
+    public List<GiftCertificate> sortByName(String type){
+        String query = SORT_BY_NAME_ASC;
+        if (type.equalsIgnoreCase("desc")){
+            query = SORT_BY_NAME_DESC;
         }
         return jdbcTemplate.query(query, giftCertificateMapper);
     }
