@@ -14,16 +14,16 @@ public class TagService {
         this.tagDao = tagDao;
     }
 
+    public List<Tag> findAll() {
+        return tagDao.findAll();
+    }
+
     public void save(Tag tag) {
         tagDao.save(tag);
     }
 
     public void delete(int id) {
         tagDao.delete(id);
-    }
-
-    public List<Tag> findAll() {
-        return tagDao.findAll();
     }
 
     public Tag findById(int id){
@@ -35,7 +35,7 @@ public class TagService {
     }
 
     public boolean isExist(int id){
-        return tagDao.isExist(id);
+        return tagDao.isExistById(id);
     }
 
     public boolean isExistByName(String name){

@@ -10,6 +10,6 @@ public interface Dao<T> {
     List<T> findAll();
     T findById(int id);
 
-    boolean isExist(int id);
+    boolean isExistById(int id);
     boolean isExistByName(String name);
    }

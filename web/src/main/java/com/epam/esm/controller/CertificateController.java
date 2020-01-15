@@ -1,8 +1,6 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dao.entity.GiftCertificate;
-import com.epam.esm.dao.exception.CertificateNotFoundException;
-import com.epam.esm.dao.exception.TagNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,21 +21,21 @@ public class CertificateController {
     }
 
     @GetMapping(value = "/{name}")
-    public List<GiftCertificate> findByName(@PathVariable String name) throws CertificateNotFoundException {
-        return giftCertificateService.findByName(name);
+    public List<GiftCertificate> findByPartName(@PathVariable String name)  {
+        return giftCertificateService.findByPartName(name);
     }
     @GetMapping(value = "tag_name/{name}")
-    public List<GiftCertificate> findByTag(@PathVariable String name) throws CertificateNotFoundException {
-        return giftCertificateService.findByTag(name);
+    public List<GiftCertificate> findByTag(@PathVariable String tagName) {
+        return giftCertificateService.findByTag(tagName);
     }
 
     @GetMapping(value = "description/{description}")
-    public List<GiftCertificate> findByDescription(@PathVariable String description) throws CertificateNotFoundException {
+    public List<GiftCertificate> findByDescription(@PathVariable String description) {
         return giftCertificateService.findByDescription(description);
     }
 
     @PostMapping
-    public List<GiftCertificate> save(@RequestBody GiftCertificate giftCertificate) throws CertificateNotFoundException {
+    public List<GiftCertificate> save(@RequestBody GiftCertificate giftCertificate) {
         giftCertificateService.save(giftCertificate);
         return giftCertificateService.findAll();
     }
@@ -64,7 +62,7 @@ public class CertificateController {
     }
 
     @PutMapping
-    public List<GiftCertificate> update(@RequestBody GiftCertificate giftCertificate) throws TagNotFoundException {
+    public List<GiftCertificate> update(@RequestBody GiftCertificate giftCertificate) {
         giftCertificateService.update(giftCertificate);
         return giftCertificateService.findAll();
     }

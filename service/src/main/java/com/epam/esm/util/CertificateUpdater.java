@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 public class CertificateUpdater {
 
     public void changeCertificate(GiftCertificate certificateFromDb, GiftCertificate certificate) {
-        String dateTime = ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
         if (certificate.getName()!=null && !certificate.getName().equals(certificateFromDb.getName()) ) {
             certificateFromDb.setName(certificate.getName());
         }
@@ -27,6 +27,8 @@ public class CertificateUpdater {
         if (certificate.getDuration() != certificateFromDb.getDuration()) {
             certificateFromDb.setDuration(certificate.getDuration());
         }
+        String dateTime = ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         certificateFromDb.setLastUpdateDate(dateTime);
     }
+
 }

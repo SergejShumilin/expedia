@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @RunWith(MockitoJUnitRunner.class)
 public class TagServiceTest {
     @Mock
-    TagDaoImp tagDaoImp;
+    private TagDaoImp tagDaoImp;
     @Autowired
     @InjectMocks
     private TagService tagService;
@@ -53,7 +53,7 @@ public class TagServiceTest {
 
     @Test
     public void testIsExistShouldReturnTrueWhenTagExist() {
-        Mockito.when(tagDaoImp.isExist(1)).thenReturn(true);
+        Mockito.when(tagDaoImp.isExistById(1)).thenReturn(true);
         boolean exist = tagService.isExist(1);
         Assert.assertTrue(exist);
     }

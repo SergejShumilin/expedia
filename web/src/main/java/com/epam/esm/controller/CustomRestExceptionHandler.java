@@ -23,7 +23,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                 apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({CertificateNotFoundException.class})
+    @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
             CertificateNotFoundException ex, WebRequest request) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getLocalizedMessage());

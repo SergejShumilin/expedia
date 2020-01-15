@@ -7,7 +7,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TagVerification {
-    public void checkAndSaveTagIfNotExist(TagService tagService, GiftCertificate giftCertificate){
+
+    private final TagService tagService;
+
+    public TagVerification(TagService tagService) {
+        this.tagService = tagService;
+    }
+
+    public void checkAndSaveTagIfNotExist(GiftCertificate giftCertificate){
         Tag tag = giftCertificate.getTag();
         if (!tagService.isExistByName(tag.getName())) {
             tagService.save(tag);

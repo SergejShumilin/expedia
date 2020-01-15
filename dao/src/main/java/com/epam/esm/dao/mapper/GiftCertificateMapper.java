@@ -2,7 +2,6 @@ package com.epam.esm.dao.mapper;
 
 import com.epam.esm.dao.entity.GiftCertificate;
 import com.epam.esm.dao.entity.Tag;
-import com.epam.esm.dao.impl.TagDaoImp;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +10,6 @@ import java.sql.SQLException;
 
 @Component
 public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
-    private final TagDaoImp tagDaoImp;
-
-    public GiftCertificateMapper(TagDaoImp tagDaoImp) {
-        this.tagDaoImp = tagDaoImp;
-    }
 
     @Override
     public GiftCertificate mapRow(ResultSet rs, int rowNum) throws SQLException {

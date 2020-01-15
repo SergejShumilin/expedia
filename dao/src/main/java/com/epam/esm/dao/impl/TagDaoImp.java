@@ -52,7 +52,7 @@ public class TagDaoImp implements TagDao<Tag> {
     }
 
     @Override
-    public boolean isExist(int id) {
+    public boolean isExistById(int id) {
         return jdbcTemplate.queryForObject(IS_EXISTS, Boolean.class, id);
     }
 
