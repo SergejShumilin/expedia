@@ -4,16 +4,18 @@ import com.epam.esm.dao.GiftCertificatesDao;
 import com.epam.esm.dao.entity.GiftCertificate;
 import com.epam.esm.dao.entity.Tag;
 import com.epam.esm.dao.exception.CertificateNotFoundException;
+import com.epam.esm.dao.exception.TagNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Component
 public class GiftCertificateService {
 
+    private final static String DATE_TIME = ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     private final GiftCertificatesDao<GiftCertificate> giftCertificatesDao;
     private final TagService tagService;
 
@@ -22,40 +24,47 @@ public class GiftCertificateService {
         this.tagService = tagService;
     }
 
-    private String getDate(){
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"); // Quoted "Z" to indicate UTC, no timezone offset
-        return df.format(new Date());
-    }
-
-    public void save(GiftCertificate giftCertificate) {
-        Tag tag = giftCertificate.getTag();
-        if (!tagService.isExist(tag.getId())){
-            tagService.save(tag);
-        }
-        giftCertificate.setCreateDate(getDate());
-        giftCertificate.setLastUpdateDate(getDate());
-        giftCertificatesDao.save(giftCertificate);
-    }
-
-    public void delete(int id) {
-        giftCertificatesDao.delete(id);
-    }
-
     public List<GiftCertificate> findAll() {
         return giftCertificatesDao.findAll();
     }
 
-    public GiftCertificate findById(int id) throws CertificateNotFoundException {
+    public GiftCertificate findById(int id) throws TagNotFoundException {
         boolean exist = giftCertificatesDao.isExist(id);
-        if (!exist){ throw new CertificateNotFoundException(id);}
+        if (!exist) {
+            throw new TagNotFoundException(id);
+        }
         return giftCertificatesDao.findById(id);
     }
 
-    public List<GiftCertificate> findByName(String name) {
+    public List<GiftCertificate> findByName(String name) throws CertificateNotFoundException {
+        boolean exist = giftCertificatesDao.isExistByName(name);
+        if (!exist) {
+            throw new CertificateNotFoundException(name);
+        }
         return giftCertificatesDao.findByName(name);
     }
 
-    public void update(GiftCertificate giftCertificate) throws CertificateNotFoundException {
+    public GiftCertificate findByDescription(String description){
+        return giftCertificatesDao.findByDescription(description);
+    }
+
+    public List<GiftCertificate> findByTag(String tagName) throws CertificateNotFoundException {
+        boolean existByName = tagService.isExistByName(tagName);
+        if (!existByName){
+            throw new CertificateNotFoundException(tagName);
+        }
+        return giftCertificatesDao.findByTag(tagName);
+    }
+    public void save(GiftCertificate giftCertificate) {
+
+        checkAndSaveTagIfNotExist(giftCertificate);
+        giftCertificate.setCreateDate(DATE_TIME);
+        giftCertificate.setLastUpdateDate(DATE_TIME);
+        giftCertificatesDao.save(giftCertificate);
+    }
+
+    public void update(GiftCertificate giftCertificate) throws TagNotFoundException {
+        checkAndSaveTagIfNotExist(giftCertificate);
         GiftCertificate certificateFromDb = findById(giftCertificate.getId());
         boolean equalsCertificates = certificateFromDb.equals(giftCertificate);
         if (!equalsCertificates) {
@@ -64,37 +73,39 @@ public class GiftCertificateService {
         }
     }
 
-    public void changeCertificate(GiftCertificate certificateFromDb, GiftCertificate certificate){
-       if (!certificate.getName().equals(certificateFromDb.getName())){
-           certificateFromDb.setName(certificate.getName());
-       }
-       if(certificate.getPrice()!=certificateFromDb.getPrice()){
-           certificateFromDb.setPrice(certificate.getPrice());
-       }
-       if (!certificate.getDescription().equals(certificateFromDb.getDescription())){
-           certificateFromDb.setDescription(certificate.getDescription());
-       }
-       if (!certificate.getTag().equals(certificateFromDb.getTag())){
-           certificateFromDb.setTag(certificate.getTag());
-       }
-       if (certificate.getDuration()!=certificateFromDb.getDuration()){
-           certificateFromDb.setDuration(certificate.getDuration());
-       }
-       certificateFromDb.setLastUpdateDate(getDate());
+    public void delete(int id) {
+        giftCertificatesDao.delete(id);
     }
 
-    public List<GiftCertificate> sortByName(String typeSort) {
-        List<GiftCertificate> giftCertificates = giftCertificatesDao.findAll();
-        List<GiftCertificate> collect = new ArrayList<>();
-        if (typeSort.equals("desc")) {
-            collect = giftCertificates.stream()
-                    .sorted(Comparator.comparing(GiftCertificate::getName).reversed())
-                    .collect(Collectors.toList());
-        } else if (typeSort.equals("asc")) {
-            collect = giftCertificates.stream()
-                    .sorted(Comparator.comparing(GiftCertificate::getName))
-                    .collect(Collectors.toList());
+    public List<GiftCertificate> sortByDate(String typeSort) {
+        return giftCertificatesDao.sort(typeSort);
+    }
+
+    private void checkAndSaveTagIfNotExist(GiftCertificate giftCertificate){
+        Tag tag = giftCertificate.getTag();
+        if (!tagService.isExistByName(tag.getName())) {
+            tagService.save(tag);
         }
-        return collect;
+        tag = tagService.findByName(tag.getName());
+        giftCertificate.setTag(tag);
+    }
+
+    private void changeCertificate(GiftCertificate certificateFromDb, GiftCertificate certificate) {
+        if (!certificate.getName().equals(certificateFromDb.getName())) {
+            certificateFromDb.setName(certificate.getName());
+        }
+        if (certificate.getPrice() != certificateFromDb.getPrice()) {
+            certificateFromDb.setPrice(certificate.getPrice());
+        }
+        if (!certificate.getDescription().equals(certificateFromDb.getDescription())) {
+            certificateFromDb.setDescription(certificate.getDescription());
+        }
+        if (!certificate.getTag().equals(certificateFromDb.getTag())) {
+            certificateFromDb.setTag(certificate.getTag());
+        }
+        if (certificate.getDuration() != certificateFromDb.getDuration()) {
+            certificateFromDb.setDuration(certificate.getDuration());
+        }
+        certificateFromDb.setLastUpdateDate(DATE_TIME);
     }
 }

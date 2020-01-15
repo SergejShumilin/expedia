@@ -1,8 +1,8 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.exception.ApiError;
-import com.epam.esm.exception.CertificateNotFoundException;
-import org.springframework.http.HttpHeaders;
+
+import com.epam.esm.dao.exception.ApiError;
+import com.epam.esm.dao.exception.CertificateNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

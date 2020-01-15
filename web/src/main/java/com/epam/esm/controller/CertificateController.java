@@ -1,8 +1,9 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.exception.CertificateNotFoundException;
-import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.dao.entity.GiftCertificate;
+import com.epam.esm.dao.exception.CertificateNotFoundException;
+import com.epam.esm.dao.exception.TagNotFoundException;
+import com.epam.esm.service.GiftCertificateService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,37 +17,46 @@ public class CertificateController {
         this.giftCertificateService = giftCertificateService;
     }
 
-    @PostMapping
-    public List<GiftCertificate> save(@RequestBody GiftCertificate giftCertificate) {
-        giftCertificateService.save(giftCertificate);
-        return giftCertificateService.getAll();
-    }
-
     @GetMapping
     public List<GiftCertificate> findAll() {
-        return giftCertificateService.getAll();
+        return giftCertificateService.findAll();
     }
-    
+
     @GetMapping(value = "/{name}")
-    public List<GiftCertificate> findByName(@PathVariable String name){
+    public List<GiftCertificate> findByName(@PathVariable String name) throws CertificateNotFoundException {
         return giftCertificateService.findByName(name);
+    }
+    @GetMapping(value = "tag_name/{name}")
+    public List<GiftCertificate> findByTag(@PathVariable String name) throws CertificateNotFoundException {
+        return giftCertificateService.findByTag(name);
+    }
+
+    @GetMapping(value = "description/{description}")
+    public GiftCertificate findByDescription(@PathVariable String description) throws CertificateNotFoundException {
+        return giftCertificateService.findByDescription(description);
+    }
+
+    @PostMapping
+    public List<GiftCertificate> save(@RequestBody GiftCertificate giftCertificate) throws CertificateNotFoundException {
+        giftCertificateService.save(giftCertificate);
+        return giftCertificateService.findAll();
     }
 
     @DeleteMapping(value = "/{id}")
     public List<GiftCertificate> delete(@PathVariable int id) {
         giftCertificateService.delete(id);
-        return giftCertificateService.getAll();
+        return giftCertificateService.findAll();
     }
 
-    @GetMapping(value = "/sort/{type}")
+    @GetMapping(value = "/date_sort/{type}")
     public List<GiftCertificate> sort(@PathVariable String type) {
-        return giftCertificateService.sortByName(type);
+        return giftCertificateService.sortByDate(type);
     }
 
     @PutMapping
-    public List<GiftCertificate> update(@RequestBody GiftCertificate giftCertificate) throws CertificateNotFoundException {
+    public List<GiftCertificate> update(@RequestBody GiftCertificate giftCertificate) throws TagNotFoundException {
         giftCertificateService.update(giftCertificate);
-        return giftCertificateService.getAll();
+        return giftCertificateService.findAll();
     }
 
 }
