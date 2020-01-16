@@ -51,6 +51,10 @@ public class GiftCertificateService {
     }
 
     public void delete(int id) {
+        boolean existById = giftCertificatesDao.isExistById(id);
+        if(!existById){
+            throw new CertificateNotFoundException(id);
+        }
         giftCertificatesDao.delete(id);
     }
 

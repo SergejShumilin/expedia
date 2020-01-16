@@ -39,11 +39,11 @@ public class TagServiceTest {
     Mockito.verify(tagDaoImp, Mockito.times(1)).findAll();
     }
 
-    @Test
-    public void testFindByIdShouldTagDaoCallMethodFindById()  {
-        tagService.findById(1);
-        Mockito.verify(tagDaoImp, Mockito.times(1)).findById(1);
-    }
+//    @Test
+//    public void testFindByIdShouldTagDaoCallMethodFindById()  {
+//        tagService.findById(1);
+//        Mockito.verify(tagDaoImp, Mockito.times(1)).findById(1);
+//    }
 
     @Test
     public void testFindByNameShouldTagDaoCallMethodFindByName() {
