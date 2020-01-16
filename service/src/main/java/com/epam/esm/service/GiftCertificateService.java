@@ -78,10 +78,7 @@ public class GiftCertificateService {
         if (giftCertificate.getTag()!=null) {
             tagVerification.checkAndSaveTagIfNotExist(giftCertificate);
         }
-        boolean existById = giftCertificatesDao.isExistById(giftCertificate.getId());
-        if (!existById){
-            throw new CertificateNotFoundException("name");
-        }
+
         GiftCertificate certificateFromDb = giftCertificatesDao.findById(giftCertificate.getId());
         boolean equalsCertificates = certificateFromDb.equals(giftCertificate);
         if (!equalsCertificates) {
